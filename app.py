@@ -41,8 +41,10 @@ while running:
     user_input = input('> ')
     match user_input:
         case '1':
+            os.system('clear')
             db.view_employees(False)
         case '2':
+            os.system('clear')
             db.view_companies(False)
         case '3':
             db.add_employee_prompt()

@@ -25,7 +25,6 @@ Please select what you would like to do:
         self.connection.commit()
     
     def view_employees (self, updating):
-        os.system('clear')
         if updating:
             print('=========')
             print('Employees')
@@ -60,7 +59,6 @@ Please select what you would like to do:
             return valid_ids
     
     def view_companies (self, updating):
-        os.system('clear')
         if updating:
             print('=========')
             print('Companies')
@@ -95,12 +93,20 @@ Please select what you would like to do:
         else:
             return valid_ids
     
-    def add_employee (self, first, last, age, email):
-        self.cursor.execute('''INSERT INTO employees 
-                ( first_name, last_name, age, email )
-            VALUES
-                (%s, %s, %s, %s)
-            ''', [first, last, age, email])
+    def add_employee (self, first, last, age, email, company_id):
+        properties = 'first_name, last_name, age, email'
+        values = '%s, %s, %s, %s'
+        values_list = [first, last, age, email]
+
+        if company_id != 0:
+            properties += ', company_id'
+            values += ', %s'
+            values_list.append(company_id)
+
+        self.cursor.execute(('INSERT INTO employees ' +
+                '( ' + properties + ' ) ' +
+            'VALUES (' + values + ')')
+                , values_list)
         self.connection.commit()
         
         os.system('clear')
@@ -113,7 +119,8 @@ Please select what you would like to do:
         print('Add New Employee')
         print('================\n')
         
-        valid_first, valid_last, valid_age, valid_email = [False, False, False, False]
+        valid_first, valid_last, valid_age, valid_email, valid_add_company = [False, False, False, False, False]
+        company_id = 0
 
         while valid_first == False:
             first_name = input('First name: ')
@@ -144,7 +151,28 @@ Please select what you would like to do:
             else:
                 print('Invalid input. Try again.\n')
         
-        self.add_employee(first_name, last_name, age, email)
+        while not valid_add_company:
+            add_company_input = input('Add an employer (y/n)? ')
+            if add_company_input.lower() == 'y':
+                valid_add_company = True
+                
+                print()
+                valid_ids = self.view_companies(True)
+                valid_company_id, company_id = [False, 0]
+
+                while not valid_company_id:
+                    company_id = input('Please enter the company ID: ')
+                    if int(company_id) in valid_ids:
+                        company_id = int(company_id)
+                        valid_company_id = True
+                    else:
+                        print('Invalid input. Please try again.\n')
+            elif add_company_input.lower() == 'n':
+                valid_add_company = True
+            else:
+                print('Invalid input. Please try again.\n')
+        
+        self.add_employee(first_name, last_name, age, email, company_id)
     
     def add_company (self, name, state):
         self.cursor.execute('''INSERT INTO companies 
