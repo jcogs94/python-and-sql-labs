@@ -16,6 +16,10 @@ Please select what you would like to do:
     9. Quit
 ''')
 
+    def update_entry (self, table_name, id, property, value):
+        self.cursor.execute(("UPDATE " + table_name + " SET " + property + " = %s WHERE id = %s"), [value, id])
+        self.connection.commit()
+    
     def view_employees (self, updating):
         os.system('clear')
         if updating:
@@ -51,24 +55,41 @@ Please select what you would like to do:
         else:
             return valid_ids
     
-    def view_companies (self):
+    def view_companies (self, updating):
         os.system('clear')
-        print('==============')
-        print('View Companies')
-        print('==============\n')
+        if updating:
+            print('=========')
+            print('Companies')
+            print('=========\n')
+        else:
+            print('==============')
+            print('View Companies')
+            print('==============\n')
 
         self.cursor.execute('SELECT * FROM companies')
         data = self.cursor.fetchall()
+        valid_ids = []
 
-        output_table = PrettyTable(['Name', 'State'])
-        for entry in data:
-            output_table.add_row([entry[1], entry[2]])
-        
+
+        if updating:
+            output_table = PrettyTable(['ID', 'Name', 'State'])
+            for entry in data:
+                valid_ids.append(entry[0])
+                output_table.add_row([entry[0], entry[1], entry[2]])
+        else:
+            output_table = PrettyTable(['Name', 'State'])
+            for entry in data:
+                output_table.add_row([entry[1], entry[2]])
+
         print(output_table, '\n')
-        input('[Enter] to go back to menu. ')
+        
+        if not updating:
+            input('[Enter] to go back to menu. ')
 
-        os.system('clear')
-        self.print_prompt()
+            os.system('clear')
+            self.print_prompt()
+        else:
+            return valid_ids
     
     def add_employee (self, first, last, age, email):
         self.cursor.execute('''INSERT INTO employees 
@@ -157,11 +178,7 @@ Please select what you would like to do:
         
         self.add_company(name, state)
     
-    def update_employee (self, id, property, value):
-        self.cursor.execute(("UPDATE employees SET " + property + " = %s WHERE id = %s"), [value, id])
-        self.connection.commit()
-    
-    def update_employee_prompt (self):
+    def update_employee (self):
         valid_ids = self.view_employees(True)
         employee_id = ''
 
@@ -201,7 +218,7 @@ What would you like to update?
                         else:
                             print('Invalid input. Please try again.\n')
                     
-                    self.update_employee(employee_id, 'first_name', name)
+                    self.update_entry('employees', employee_id, 'first_name', name)
                 case '2':
                     valid_name, name = [False, '']
                     while not valid_name:
@@ -211,7 +228,7 @@ What would you like to update?
                         else:
                             print('Invalid input. Please try again.\n')
                     
-                    self.update_employee(employee_id, 'last_name', name)
+                    self.update_entry('employees', employee_id, 'last_name', name)
                 case '3':
                     valid_age, age = [False, '']
                     while not valid_age:
@@ -222,7 +239,7 @@ What would you like to update?
                         except ValueError:
                             print('Invalid input. Try again.\n')
                     
-                    self.update_employee(employee_id, 'age', age)
+                    self.update_entry('employees', employee_id, 'age', age)
                 case '4':
                     valid_email, email = [False, '']
                     while not valid_email:
@@ -232,7 +249,7 @@ What would you like to update?
                         else:
                             print('Invalid input. Please try again.\n')
                     
-                    self.update_employee(employee_id, 'email', email)
+                    self.update_entry('employees', employee_id, 'email', email)
                 case '5':
                     user_updating = False
                 case _:
@@ -240,6 +257,64 @@ What would you like to update?
         
         os.system('clear')
         print('Employee updated...')
+        self.print_prompt()
+    
+    def update_company (self):
+        valid_ids = self.view_companies(True)
+        company_id = ''
+
+        valid_id_selected = False
+        while not valid_id_selected:
+            company_id = input('Please enter the ID of the company you would like to update: ')
+            
+            if int(company_id) in valid_ids:
+                company_id = int(company_id)
+                valid_id_selected = True
+            else:
+                print('Invalid input. Please try again.\n')
+        
+        print('\n==============')
+        print('Update Company')
+        print('==============')
+
+        user_updating = True
+        while user_updating:
+            print('''
+What would you like to update?
+    1. Company name
+    2. Company state
+    3. Done Updating
+            ''')
+            
+            update_selection = input('> ')
+            match update_selection:
+                case '1':
+                    valid_name, name = [False, '']
+                    while not valid_name:
+                        name = input('\nNew company name: ')
+                        if len(name) <= 20:
+                            valid_name = True
+                        else:
+                            print('Invalid input. Please try again.\n')
+                    
+                    self.update_entry('companies', company_id, 'name', name)
+                case '2':
+                    valid_state, state = [False, '']
+                    while not valid_state:
+                        name = input("\nNew company state (2 character abbreviation, ex. 'NY'): ")
+                        if len(name) == 2:
+                            valid_name = True
+                        else:
+                            print('Invalid input. Please try again.\n')
+                    
+                    self.update_entry('companies', company_id, 'state', state)
+                case '3':
+                    user_updating = False
+                case _:
+                    print('Invalid input. Please try again.\n')
+        
+        os.system('clear')
+        print('Company updated...')
         self.print_prompt()
     
     def __init__ (self, connection, cursor):

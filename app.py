@@ -39,15 +39,15 @@ while running:
         case '1':
             db.view_employees(False)
         case '2':
-            db.view_companies()
+            db.view_companies(False)
         case '3':
             db.add_employee_prompt()
         case '4':
             db.add_company_prompt()
         case '5':
-            db.update_employee_prompt()
+            db.update_employee()
         case '6':
-            print('6')
+            db.update_company()
         case '7':
             print('7')
         case '8':
