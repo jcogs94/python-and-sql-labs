@@ -16,24 +16,40 @@ Please select what you would like to do:
     9. Quit
 ''')
 
-    def view_employees (self):
+    def view_employees (self, updating):
         os.system('clear')
-        print('==============')
-        print('View Employees')
-        print('==============\n')
+        if updating:
+            print('=========')
+            print('Employees')
+            print('=========\n')
+        else:
+            print('==============')
+            print('View Employees')
+            print('==============\n')
 
         self.cursor.execute('SELECT * FROM employees')
         data = self.cursor.fetchall()
+        valid_ids = []
 
-        output_table = PrettyTable(['First', 'Last', 'Age', 'Email'])
-        for entry in data:
-            output_table.add_row([entry[1], entry[2], entry[3], entry[4]])
+        if updating:
+            output_table = PrettyTable(['ID', 'First', 'Last', 'Age', 'Email'])
+            for entry in data:
+                valid_ids.append(entry[0])
+                output_table.add_row([entry[0], entry[1], entry[2], entry[3], entry[4]])
+        else:
+            output_table = PrettyTable(['First', 'Last', 'Age', 'Email'])
+            for entry in data:
+                output_table.add_row([entry[1], entry[2], entry[3], entry[4]])
         
         print(output_table, '\n')
-        input('[Enter] to go back to menu. ')
 
-        os.system('clear')
-        self.print_prompt()
+        if not updating:
+            input('[Enter] to go back to menu. ')
+
+            os.system('clear')
+            self.print_prompt()
+        else:
+            return valid_ids
     
     def view_companies (self):
         os.system('clear')
@@ -140,6 +156,20 @@ Please select what you would like to do:
                 print('Invalid input. Try again.\n')
         
         self.add_company(name, state)
+    
+    def update_company_prompt (self):
+        valid_ids = self.view_employees(True)
+        employee_id = ''
+
+        valid_id_selected = False
+        while not valid_id_selected:
+            employee_id = input('Please enter the ID of the employee you would like to update: ')
+            
+            if int(employee_id) in valid_ids:
+                employee_id = int(employee_id)
+                valid_id_selected = True
+            else:
+                print('Invalid input. Please try again.\n')
     
     def __init__ (self, connection, cursor):
         self.connection = connection

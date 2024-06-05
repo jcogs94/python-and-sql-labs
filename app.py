@@ -37,7 +37,7 @@ while running:
     user_input = input('> ')
     match user_input:
         case '1':
-            db.view_employees()
+            db.view_employees(False)
         case '2':
             db.view_companies()
         case '3':
@@ -45,7 +45,7 @@ while running:
         case '4':
             db.add_company_prompt()
         case '5':
-            print('5')
+            db.update_company_prompt()
         case '6':
             print('6')
         case '7':
