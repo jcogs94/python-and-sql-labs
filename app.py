@@ -49,7 +49,7 @@ while running:
         case '6':
             db.update_company()
         case '7':
-            print('7')
+            db.delete_employee()
         case '8':
             print('8')
         case '9':

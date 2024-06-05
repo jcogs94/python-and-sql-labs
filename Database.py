@@ -20,6 +20,10 @@ Please select what you would like to do:
         self.cursor.execute(("UPDATE " + table_name + " SET " + property + " = %s WHERE id = %s"), [value, id])
         self.connection.commit()
     
+    def delete_entry (self, table_name, id):
+        self.cursor.execute(("DELETE FROM " + table_name + " WHERE id = %s"), [id])
+        self.connection.commit()
+    
     def view_employees (self, updating):
         os.system('clear')
         if updating:
@@ -315,6 +319,25 @@ What would you like to update?
         
         os.system('clear')
         print('Company updated...')
+        self.print_prompt()
+    
+    def delete_employee (self):
+        valid_ids = self.view_employees(True)
+        
+        employee_id = ''
+        valid_id_selected = False
+
+        while not valid_id_selected:
+            employee_id = input('Enter the ID of the employee you want to delete: ')
+            if int(employee_id) in valid_ids:
+                valid_id_selected = True
+                employee_id = int(employee_id)
+                self.delete_entry('employees', employee_id)
+            else:
+                print('Invalid input. Please try again.\n')
+        
+        os.system('clear')
+        print('Employee deleted...')
         self.print_prompt()
     
     def __init__ (self, connection, cursor):
