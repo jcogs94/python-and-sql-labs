@@ -34,7 +34,19 @@ Please select what you would like to do:
             print('View Employees')
             print('==============\n')
 
-        self.cursor.execute('SELECT * FROM employees')
+        self.cursor.execute('''
+            SELECT
+                employees.id, first_name,
+                last_name, age, email,
+                name AS employer
+            FROM
+                employees
+            LEFT JOIN
+                companies
+            ON
+                employees.company_id = companies.id
+            ORDER BY
+                employees.id ASC''')
         data = self.cursor.fetchall()
         valid_ids = []
 
@@ -211,6 +223,7 @@ Please select what you would like to do:
         self.add_company(name, state)
     
     def update_employee (self):
+        print()
         valid_ids = self.view_employees(True)
         employee_id = ''
 
@@ -306,6 +319,7 @@ What would you like to update?
         self.print_prompt()
     
     def update_company (self):
+        print()
         valid_ids = self.view_companies(True)
         company_id = ''
 

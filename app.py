@@ -1,3 +1,5 @@
+# Partnered with Matthew B
+
 import os
 import psycopg2
 from Database import Database
@@ -20,12 +22,6 @@ cursor = connection.cursor()
 #     id SERIAL, name VARCHAR(20),
 #     state VARCHAR(2)
 # )''')
-
-# # Create roles table
-# cursor.execute('''CREATE TABLE roles (
-#     employee_id INT, company_id INT
-# )''')
-
 
 # # Update employee schema
 # cursor.execute('ALTER TABLE employees ADD COLUMN company_id INT')
