@@ -157,7 +157,11 @@ Please select what you would like to do:
         
         self.add_company(name, state)
     
-    def update_company_prompt (self):
+    def update_employee (self, id, property, value):
+        self.cursor.execute(("UPDATE employees SET " + property + " = %s WHERE id = %s"), [value, id])
+        self.connection.commit()
+    
+    def update_employee_prompt (self):
         valid_ids = self.view_employees(True)
         employee_id = ''
 
@@ -170,6 +174,73 @@ Please select what you would like to do:
                 valid_id_selected = True
             else:
                 print('Invalid input. Please try again.\n')
+        
+        print('\n===============')
+        print('Update Employee')
+        print('===============')
+
+        user_updating = True
+        while user_updating:
+            print('''
+What would you like to update?
+    1. First name
+    2. Last name
+    3. Age
+    4. Email
+    5. Done Updating
+            ''')
+            
+            update_selection = input('> ')
+            match update_selection:
+                case '1':
+                    valid_name, name = [False, '']
+                    while not valid_name:
+                        name = input('\nNew first name: ')
+                        if len(name) <= 20:
+                            valid_name = True
+                        else:
+                            print('Invalid input. Please try again.\n')
+                    
+                    self.update_employee(employee_id, 'first_name', name)
+                case '2':
+                    valid_name, name = [False, '']
+                    while not valid_name:
+                        name = input('\nNew last name: ')
+                        if len(name) <= 20:
+                            valid_name = True
+                        else:
+                            print('Invalid input. Please try again.\n')
+                    
+                    self.update_employee(employee_id, 'last_name', name)
+                case '3':
+                    valid_age, age = [False, '']
+                    while not valid_age:
+                        age = input('\nNew age: ')
+                        try:
+                            age = int(age)
+                            valid_age = True
+                        except ValueError:
+                            print('Invalid input. Try again.\n')
+                    
+                    self.update_employee(employee_id, 'age', age)
+                case '4':
+                    valid_email, email = [False, '']
+                    while not valid_email:
+                        email = input('\nNew email: ')
+                        if len(email) <= 32:
+                            valid_email = True
+                        else:
+                            print('Invalid input. Please try again.\n')
+                    
+                    self.update_employee(employee_id, 'email', email)
+                case '5':
+                    user_updating = False
+                case _:
+                    print('Invalid input. Please try again.\n')
+        
+        os.system('clear')
+        print('Employee updated...')
+        self.print_prompt()
     
     def __init__ (self, connection, cursor):
         self.connection = connection

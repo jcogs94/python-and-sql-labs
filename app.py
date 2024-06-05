@@ -45,7 +45,7 @@ while running:
         case '4':
             db.add_company_prompt()
         case '5':
-            db.update_company_prompt()
+            db.update_employee_prompt()
         case '6':
             print('6')
         case '7':
