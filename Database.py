@@ -35,6 +35,25 @@ Please select what you would like to do:
         os.system('clear')
         self.print_prompt()
     
+    def view_companies (self):
+        os.system('clear')
+        print('==============')
+        print('View Companies')
+        print('==============\n')
+
+        self.cursor.execute('SELECT * FROM companies')
+        data = self.cursor.fetchall()
+
+        output_table = PrettyTable(['Name', 'State'])
+        for entry in data:
+            output_table.add_row([entry[1], entry[2]])
+        
+        print(output_table, '\n')
+        input('[Enter] to go back to menu. ')
+
+        os.system('clear')
+        self.print_prompt()
+    
     def add_employee (self, first, last, age, email):
         self.cursor.execute('''INSERT INTO employees 
                 ( first_name, last_name, age, email )
@@ -85,6 +104,42 @@ Please select what you would like to do:
                 print('Invalid input. Try again.\n')
         
         self.add_employee(first_name, last_name, age, email)
+    
+    def add_company (self, name, state):
+        self.cursor.execute('''INSERT INTO companies 
+                ( name, state )
+            VALUES
+                (%s, %s)
+            ''', [name, state])
+        self.connection.commit()
+        
+        os.system('clear')
+        print('New company added...')
+        self.print_prompt()
+    
+    def add_company_prompt (self):
+        os.system('clear')
+        print('===============')
+        print('Add New Company')
+        print('===============\n')
+        
+        valid_name, valid_state = [False, False]
+
+        while valid_name == False:
+            name = input('Company name: ')
+            if len(name) <= 20:
+                valid_name = True
+            else:
+                print('Invalid input. Try again.\n')
+        
+        while valid_state == False:
+            state = input("Company state (2 character abbreviation, ex. 'NY'): ")
+            if len(state) == 2:
+                valid_state = True
+            else:
+                print('Invalid input. Try again.\n')
+        
+        self.add_company(name, state)
     
     def __init__ (self, connection, cursor):
         self.connection = connection
