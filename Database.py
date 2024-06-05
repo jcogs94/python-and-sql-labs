@@ -1,29 +1,4 @@
 import os
-import psycopg2
-
-connection = psycopg2.connect(
-    database = 'python_sql_lab'
-)
-
-cursor = connection.cursor()
-
-# # CREATE TABLES FOR APP
-# # Create employees table
-# cursor.execute('''CREATE TABLE employees (
-#     id SERIAL, first_name VARCHAR(20),
-#     last_name VARCHAR(20), age INT, email VARCHAR(32)
-# )''')
-
-# # Create companies table
-# cursor.execute('''CREATE TABLE companies (
-#     id SERIAL, name VARCHAR(20),
-#     state VARCHAR(2)
-# )''')
-
-# # Create roles table
-# cursor.execute('''CREATE TABLE roles (
-#     employee_id INT, company_id INT
-# )''')
 
 class Database:
     def print_prompt (self):
@@ -40,7 +15,14 @@ Please select what you would like to do:
     9. Quit
 ''')
 
-    def add_employee (self):
+    def add_employee (self, first, last, age, email):
+        self.cursor.execute('''INSERT INTO employees 
+                ( first_name, last_name, age, email )
+            VALUES
+                (%s, %s, %s, %s)
+            ''', [first, last, age, email])
+        self.connection.commit()
+        
         os.system('clear')
         print('New employee added...')
         self.print_prompt()
@@ -49,43 +31,44 @@ Please select what you would like to do:
         os.system('clear')
         print('================')
         print('Add New Employee')
-        print('================')
+        print('================\n')
         
         valid_first, valid_last, valid_age, valid_email = [False, False, False, False]
 
         while valid_first == False:
-            first_name = input('\nFirst name: ')
+            first_name = input('First name: ')
             if len(first_name) <= 20:
                 valid_first = True
             else:
-                print('Invalid input. Try again.')
+                print('Invalid input. Try again.\n')
         
         while valid_last == False:
-            last_name = input('\nLast name: ')
+            last_name = input('Last name: ')
             if len(last_name) <= 20:
                 valid_last = True
             else:
-                print('Invalid input. Try again.')
+                print('Invalid input. Try again.\n')
         
         while valid_age == False:
-            age = input('\nAge: ')
+            age = input('Age: ')
             try:
                 age = int(age)
                 valid_age = True
             except ValueError:
-                print('Invalid input. Try again.')
+                print('Invalid input. Try again.\n')
 
         while valid_email == False:
-            email = input('\nEmail: ')
+            email = input('Email: ')
             if len(email) <= 32:
                 valid_email = True
             else:
-                print('Invalid input. Try again.')
+                print('Invalid input. Try again.\n')
         
-        self.add_employee()
+        self.add_employee(first_name, last_name, age, email)
     
-    def __init__ (self):
-        print('created...')
+    def __init__ (self, connection, cursor):
+        self.connection = connection
+        self.cursor = cursor
 
 
 # # SHOW ALL ENTRIES FOR TESTING
@@ -100,6 +83,3 @@ Please select what you would like to do:
 # # Show all role entries
 # cursor.execute('SELECT * FROM roles')
 # print(cursor.fetchall())
-
-cursor.close()
-connection.close()

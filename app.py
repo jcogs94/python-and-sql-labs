@@ -1,7 +1,33 @@
 import os
+import psycopg2
 from Database import Database
 
-db = Database()
+connection = psycopg2.connect(
+        database = 'python_sql_lab'
+    )
+
+cursor = connection.cursor()
+
+# # CREATE TABLES FOR APP
+# # Create employees table
+# cursor.execute('''CREATE TABLE employees (
+#     id SERIAL, first_name VARCHAR(20),
+#     last_name VARCHAR(20), age INT, email VARCHAR(32)
+# )''')
+
+# # Create companies table
+# cursor.execute('''CREATE TABLE companies (
+#     id SERIAL, name VARCHAR(20),
+#     state VARCHAR(2)
+# )''')
+
+# # Create roles table
+# cursor.execute('''CREATE TABLE roles (
+#     employee_id INT, company_id INT
+# )''')
+
+
+db = Database(connection, cursor)
 os.system('clear')
 print('Welcome to the app.')
 db.print_prompt()
@@ -30,3 +56,9 @@ while running:
             running = False
         case _:
             print('Please enter a valid input.\n')
+
+# # Commit for table creation
+# connection.commit()
+
+cursor.close()
+connection.close()
