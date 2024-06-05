@@ -27,6 +27,10 @@ cursor = connection.cursor()
 # )''')
 
 
+# # Update employee schema
+# cursor.execute('ALTER TABLE employees ADD COLUMN company_id INT')
+
+
 db = Database(connection, cursor)
 os.system('clear')
 print('Welcome to the app.')

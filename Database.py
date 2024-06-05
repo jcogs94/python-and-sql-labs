@@ -40,14 +40,14 @@ Please select what you would like to do:
         valid_ids = []
 
         if updating:
-            output_table = PrettyTable(['ID', 'First', 'Last', 'Age', 'Email'])
+            output_table = PrettyTable(['ID', 'First', 'Last', 'Age', 'Email', 'Employer'])
             for entry in data:
                 valid_ids.append(entry[0])
-                output_table.add_row([entry[0], entry[1], entry[2], entry[3], entry[4]])
+                output_table.add_row([entry[0], entry[1], entry[2], entry[3], entry[4], entry[5]])
         else:
-            output_table = PrettyTable(['First', 'Last', 'Age', 'Email'])
+            output_table = PrettyTable(['First', 'Last', 'Age', 'Email', 'Employer'])
             for entry in data:
-                output_table.add_row([entry[1], entry[2], entry[3], entry[4]])
+                output_table.add_row([entry[1], entry[2], entry[3], entry[4], entry[5]])
         
         print(output_table, '\n')
 
@@ -208,7 +208,8 @@ What would you like to update?
     2. Last name
     3. Age
     4. Email
-    5. Done Updating
+    5. Company worked for
+    6. Done Updating
             ''')
             
             update_selection = input('> ')
@@ -255,6 +256,19 @@ What would you like to update?
                     
                     self.update_entry('employees', employee_id, 'email', email)
                 case '5':
+                    valid_ids = self.view_companies(True)
+                    
+                    valid_company_id, company_id = [False, 0]
+                    while not valid_company_id:
+                        company_id = input('New company ID: ')
+                        if int(company_id) in valid_ids:
+                            company_id = int(company_id)
+                            valid_company_id = True
+                        else:
+                            print('Invalid input. Please try again.\n')
+                    
+                    self.update_entry('employees', employee_id, 'company_id', company_id)
+                case '6':
                     user_updating = False
                 case _:
                     print('Invalid input. Please try again.\n')
