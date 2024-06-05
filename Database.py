@@ -1,4 +1,5 @@
 import os
+from prettytable import PrettyTable
 
 class Database:
     def print_prompt (self):
@@ -15,6 +16,21 @@ Please select what you would like to do:
     9. Quit
 ''')
 
+    def view_employees (self):
+        os.system('clear')
+        print('==============')
+        print('View Employees')
+        print('==============\n')
+
+        self.cursor.execute('SELECT * FROM employees')
+        data = self.cursor.fetchall()
+
+        output_table = PrettyTable(['First', 'Last', 'Age', 'Email'])
+        for entry in data:
+            output_table.add_row([entry[1], entry[2], entry[3], entry[4]])
+        
+        print(output_table, '\n')
+    
     def add_employee (self, first, last, age, email):
         self.cursor.execute('''INSERT INTO employees 
                 ( first_name, last_name, age, email )

@@ -37,7 +37,7 @@ while running:
     user_input = input('> ')
     match user_input:
         case '1':
-            print('1')
+            db.view_employees()
         case '2':
             print('2')
         case '3':
