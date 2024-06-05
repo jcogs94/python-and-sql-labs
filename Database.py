@@ -30,6 +30,10 @@ Please select what you would like to do:
             output_table.add_row([entry[1], entry[2], entry[3], entry[4]])
         
         print(output_table, '\n')
+        input('[Enter] to go back to menu. ')
+
+        os.system('clear')
+        self.print_prompt()
     
     def add_employee (self, first, last, age, email):
         self.cursor.execute('''INSERT INTO employees 
