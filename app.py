@@ -51,7 +51,7 @@ while running:
         case '7':
             db.delete_employee()
         case '8':
-            print('8')
+            db.delete_company()
         case '9':
             running = False
         case _:

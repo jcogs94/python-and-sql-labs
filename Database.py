@@ -340,6 +340,25 @@ What would you like to update?
         print('Employee deleted...')
         self.print_prompt()
     
+    def delete_company (self):
+        valid_ids = self.view_companies(True)
+        
+        company_id = ''
+        valid_id_selected = False
+
+        while not valid_id_selected:
+            company_id = input('Enter the ID of the company you want to delete: ')
+            if int(company_id) in valid_ids:
+                valid_id_selected = True
+                company_id = int(company_id)
+                self.delete_entry('companies', company_id)
+            else:
+                print('Invalid input. Please try again.\n')
+        
+        os.system('clear')
+        print('Company deleted...')
+        self.print_prompt()
+    
     def __init__ (self, connection, cursor):
         self.connection = connection
         self.cursor = cursor
